@@ -151,7 +151,7 @@ class GUI():
         self._root.wm_title(title)
         self._root.wm_geometry("+100+80")
         self._root.bind("<Key-q>", self._do_shutdown)
-        self._root.bind("<Button-1>", self._do_run)
+        self._root.bind("<Key-w>", self._do_run)
         self._root.resizable(FALSE,FALSE)
 
         self._canvas = Canvas(
