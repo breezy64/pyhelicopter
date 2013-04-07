@@ -1,15 +1,15 @@
-
+import agentsim
 class Helicopter:
-    def __init__(self,x_coord,y_coord,width,height,canvas=None,id=None):
+    def __init__(self,x_coord,y_coord,width,height,canvas=None):
         self.canvas=canvas
         self.x_coord=x_coord
         self.y_coord=y_coord
         self.width=width
         self.height=height
-        self.id=id
+        self.id=None
         self.button_press=0
         if self.canvas is not None:
-            self.canvas.create_rectangle(x_coord,y_coord,x_coord+width,y_coord+height,fill="red")
+            self.canvas.create_rectangle(x_coord-(width/2),y_coord-(height/2),x_coord+(width/2),y_coord+(height/2),fill="red")
     def button_pressed(self):
         self.button_press=1
     def button_released(self):
@@ -29,10 +29,10 @@ class Helicopter:
     def create_helicopter(self,canvas):
         self.canvas=canvas
         self._draw()
-    def play(self,dx=0,dy=20):
+    def play(self,dy=50):
         if self.button_press:
             dy-=2*dy
-        self.canvas.move(self.id,dx,dy)
+        self.canvas.move(self.id,0,dy)
         self.y_coord+=dy
     def _draw(self):
         x=self.x_coord
@@ -40,6 +40,6 @@ class Helicopter:
         width=self.width
         height=self.height
         try:
-            self.id=self.canvas.create_rectangle(x-(width/2),y-(height/2),x+(width/2),y+(height/2),fill="red")
+            self.id=self.canvas.create_rectangle(x-(width/2),y-(height/2),x+(width/2),y+(height/2),fill="red",tags="helicopter")
         except:
             print("No canvas.")
