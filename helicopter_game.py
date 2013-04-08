@@ -1,8 +1,8 @@
 import helicopter
-
-heli_width=50
-heli_height=25
+heli_width=144
+heli_height=53
 speed=30
+
 
 heli=helicopter.Helicopter(0,0,heli_width,heli_height)
 def notify(ev):
@@ -31,7 +31,8 @@ def do_init():
     canvas.create_rectangle(cx_min,cy_min,cx_max,cy_max,tags="canvas")
     heli.set_x_coord(cx_max/2)
     heli.set_y_coord(cy_max/2)
-    heli.create_helicopter(canvas)
+    photo=agentsim.PhotoImage(file="helicopter.gif")
+    heli.create_helicopter(canvas,photo)
 def do_step():
     collision()
     heli.play(speed)
