@@ -29,11 +29,14 @@ class Helicopter:
         self.photo=photo
         self.canvas=canvas
         self._draw()
-    def play(self,dy=50):
+    def play(self,photo,dy=50):
+        self.photo=photo
         if self.button_press:
             dy-=2*dy
-        self.canvas.move(self.id,0,dy)
+        #self.canvas.move(self.id,0,dy)
+        self.canvas.delete(self.id)
         self.y_coord+=dy
+        self._draw()
     def _draw(self):
         x=self.x_coord
         y=self.y_coord

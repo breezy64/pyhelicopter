@@ -1,10 +1,12 @@
 import helicopter
+import movingpic
 heli_width=144
 heli_height=53
-speed=30
+speed=20
 
 
 heli=helicopter.Helicopter(0,0,heli_width,heli_height)
+gif=movingpic.Picture(0)
 def notify(ev):
     if ev.type=='4':
         heli.button_pressed()
@@ -31,11 +33,15 @@ def do_init():
     canvas.create_rectangle(cx_min,cy_min,cx_max,cy_max,tags="canvas")
     heli.set_x_coord(cx_max/2)
     heli.set_y_coord(cy_max/2)
-    photo=agentsim.PhotoImage(file="helicopter.gif")
+    images=[agentsim.PhotoImage(file="heli_1.gif"),agentsim.PhotoImage(file="heli_2.gif"),agentsim.PhotoImage(file="heli_3.gif"),
+            agentsim.PhotoImage(file="heli_4.gif")]
+    gif.add_images(images)
+    photo=gif.update_image()
     heli.create_helicopter(canvas,photo)
 def do_step():
     collision()
-    heli.play(speed)
+    pic=gif.update_image()
+    heli.play(pic,speed)
     
 
 if __name__ == "__main__":
