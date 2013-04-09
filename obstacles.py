@@ -6,13 +6,12 @@ class Obstacle():
 
     @classmethod
     def get_all_instances(cls):
-        return [v for v in obstacle._instances.values() if isinstance(v, cls)]
+        return [v for v in Obstacle._instances.values() if isinstance(v, cls)]
 
     @classmethod
     def del_instance_with_id(cls, id):
-        if id in obstacle._instances:
-            obstacle._instances[id].hide()
-            del(obstacle._instances[id])
+        if id in Obstacle._instances:
+            del(Obstacle._instances[id])
 
     @classmethod
     def del_instance(cls, obj):
@@ -20,71 +19,48 @@ class Obstacle():
 
     def __init__(self,width=25):
         self.canvas=agentsim.gui.get_canvas
-        (xmin, ymin, xmax, ymax) = agentsim.gui.get_canvas_coords()
-        self._y = random.randint(ymin,ymax)
-        self._x = xmax
-        self._width=width
+        (x_min, y_min, x_max, y_max) = agentsim.gui.get_canvas_coords()
         self._height=random.randint(50,80)
-        self._id=self.canvas.create_rectangle(xmax,self._y,xmax+self.width,self._y+self_height,tags="obstacle")
+        self._y = random.randint(ymin,ymax-self._height)
+        self._x = x_max
+        self._width=width
+        self._id=self.canvas.create_rectangle(x_max,self._y,x_max+self._width,self._y+self._height,tags="obstacle")
         obstacle._instaces[self._id] = self
 
     def move_by(self,dx=100):
         self._x = self._x - dx
-        self.canvas.move(self._id,dx,0)
+        self.canvas.move(self._id,-1*dx,0)
+        xr=self._x+self._width
+        if xr<0:
+            self.canvas.delete(self._id)
+            self.del_instance_with_id(self._id)
 
     def get_id(self):
         return self._id
 
 class ceil(Obstacle):
+    def __init__(self,x,width=100,min_height=15,max_height=25):
+        self.canvas=agentsim.gui.get_canvas()
+        (x_min, y_min, x_max, y_max) = agentsim.gui.get_canvas_coords()
+        self._height = random.randint(min_height,max_height)
+        self._width=width
+        self._x=x
+        self._y=y_min
+        self._id=self.canvas.create_rectangle(self._x,self._y,self._x+self._width,self._y+self._height,tags="ceiling",fill="blue",outline="")
+        ceil._instances[self._id] = self
 
-    def __init__(self):
-        (xmin, ymin, xmax, ymax) = agentsim.gui.get_canvas_coords()
-        self._y = random.randint(ymin+20,(ymax/2)-50)
-        self._x = xmax
-        self._id = ceil._nextId
-        ceil._nextId += 1
-        ceil._instaces[self._id] = self
+class Floor(Obstacle):
+    def __init__(self, x, width = 100, min_height = 15, max_height = 25):
+        self.canvas=agentsim.gui.get_canvas()
+        (x_min, y_min, x_max, y_max) = agentsim.gui.get_canvas_coords()
+        self._height = random.randint(min_height,max_height)
+        self._width=width
+        self._x=x
+        self._y=y_max-self._height
+        self._id=self.canvas.create_rectangle(self._x,self._y,self._x+self._width,self._y+self._height,tags="ceiling",fill="blue",outline="")
+        ceil._instances[self._id] = self
 
-    def move_by(self):
-        self._x = self._x - 50
+   
+  
 
-    def get_id(self):
-        return self._id
-
-    def drawceil(self,x_min,y_min,x_max,y_max):
-        agentsim.gui.get_canvas().create_rectangle(x_min,y_min,x_max,y_max, fill='blue')
-
-class floor():
-    _nextId = 1
-    _instances = {}
-
-    @classmethod
-    def get_all_instances(cls):
-        return [v for v in obstacle._instances.values() if isinstance(v, cls)]
-
-    @classmethod
-    def del_instance_with_id(cls, id):
-        if id in floor._instances:
-            floor._instances[id].hide()
-            del(floor._instances[id])
-
-    @classmethod
-    def del_instance(cls, obj):
-        cls.del_instance_with_id(obj.get_id())
-
-    def __init__(self):
-        (xmin, ymin, xmax, ymax) = agentsim.gui.get_canvas_coords()
-        self._y = random.randint(ymin+325,ymax-20)
-        self._x = xmax
-        self._id = floor._nextId
-        floor._nextId += 1
-        floor._instances[self._id] = self
-
-    def move_by(self):
-        self._x = self._x - 50
-
-    def get_id(self):
-        return self._id
-
-    def drawfloor(x_min,y_min,x_max,y_max):
-        agentsim.gui.get_canvas().create_rectangle(x_min,y_min,x_max,y_max, fill='blue')
+    
