@@ -173,6 +173,21 @@ class GUI():
     # actions attached to buttons are prefixed with _do_
     def do_shutdown(self):
         self._do_shutdown(None)
+    def _cancel_next_simulation(self):
+        """ 
+        remove next simulation events from the queue
+        """
+
+        data = self._root.tk.call('after', 'info')
+        scripts = self._root.tk.splitlist(data)
+        # In Tk 8.3, splitlist returns: (script, type)
+        # In Tk 8.4, splitlist may return (script, type) or (script,)
+        for id in scripts:
+            self._root.after_cancel(id)
+        return    
+    def _do_pause(self):
+        self._running = 0
+        self._cancel_next_simulation()
 
     def _do_shutdown(self, ev):
         print("Game Over")
@@ -180,7 +195,7 @@ class GUI():
 
     def _do_run(self,ev):
         if not self._running:
-            self._speed = 1
+            self._speed = 149
             self._running = 1
             self._run()
 

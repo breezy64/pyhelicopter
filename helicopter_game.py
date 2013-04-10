@@ -1,88 +1,124 @@
-import helicopter
-import movingpic
-import obstacles
-
-heli_width=144
-heli_height=53
-heli_speed=20
-canvas_speed=10
+import helicopter 
+import movingpic 
+import blocks 
+import random
+ 
+heli_width=144 
+heli_height=53 
+heli_speed=5 
+canvas_speed=10 
 brick_width=100
-
-
-heli=helicopter.Helicopter(0,0,heli_width,heli_height)
+brick_limit=30
+obstacle_limit=5
+obstacle_width=25 
+ 
+ 
+heli=helicopter.Helicopter(0,0,heli_width,heli_height) 
 gif=movingpic.Picture(0)
-
-
-def ceiling(x):
-    (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords()
-    while x<x_max:
-        block=obstacles.ceil(x,brick_width)
-        x+=brick_width
-def floor(x):
-    (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords()
-    while x<x_max:
-        block=obstacles.Floor(x,brick_width)
-        x+=brick_width
-def move_obstacles():
-    ceils=set(obstacles.ceil.get_all_instances())
-    floors=set(obstacles.Floor.get_all_instances())
+loop_timer=blocks.Timer() 
+ 
+ 
+def ceiling(x): 
+    (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords() 
+    while x<x_max: 
+        block=blocks.Ceil(x,brick_width) 
+        x+=brick_width 
+def floor(x): 
+    (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords() 
+    while x<x_max: 
+        block=blocks.Floor(x,brick_width) 
+        x+=brick_width 
+def move_obstacles(): 
+    (x_min, y_min,x_max,y_max) = agentsim.gui.get_canvas_coords()    
+    ceils = set(blocks.Ceil.get_all_instances()) 
+    floors = set(blocks.Floor.get_all_instances())
+    all_blocks = blocks.Block.get_all_instances() 
+    
     superset=ceils.union(floors)
-    for s in superset:
-        s.move_by(canvas_speed)
-    
-    ceil_last_block=max(ceils,key=lambda e:e._x)
-    ceil_x=ceil_last_block._x+brick_width
-    ceil_new_block=obstacles.ceil(ceil_x,brick_width)
-    
-    floor_last_block=max(floors,key=lambda e:e._x)
-    floor_x=floor_last_block._x+brick_width
-    floor_new_block=obstacles.Floor(floor_x,brick_width)
-
-
-        
-
-
-def do_init():
+    for o in all_blocks:
+        o.move_by(canvas_speed)
+    if len(superset)<brick_limit:    
+        ceil_last_block=max(ceils,key=lambda e:e._x) 
+        ceil_x=ceil_last_block._x+brick_width 
+        ceil_new_block=blocks.Ceil(ceil_x,brick_width) 
+     
+        floor_last_block=max(floors,key=lambda e:e._x) 
+        floor_x=floor_last_block._x+brick_width 
+        floor_new_block=blocks.Floor(floor_x,brick_width)
     canvas=agentsim.gui.get_canvas()
-    (cx_min,cy_min,cx_max,cy_max)=agentsim.gui.get_canvas_coords()
-    canvas.create_rectangle(cx_min,cy_min,cx_max,cy_max,tags="canvas")
-    heli.set_x_coord(cx_max/2)
-    heli.set_y_coord(cy_max/2)
-    images=[agentsim.PhotoImage(file="heli_1.gif"),agentsim.PhotoImage(file="heli_2.gif"),agentsim.PhotoImage(file="heli_3.gif"),
-            agentsim.PhotoImage(file="heli_4.gif")]
-    gif.add_images(images)
-    photo=gif.update_image()
-    ceiling(0)
+    o_blocks=len(canvas.find_withtag("obstacle"))  
+    if o_blocks<obstacle_limit and loop_timer.get_time()%50==0:
+        block = blocks.Obstacle(obstacle_width) 
+ 
+ 
+def do_init(): 
+    canvas=agentsim.gui.get_canvas() 
+    (cx_min,cy_min,cx_max,cy_max)=agentsim.gui.get_canvas_coords() 
+    canvas.create_rectangle(cx_min,cy_min,cx_max,cy_max,tags="canvas") 
+    heli.set_x_coord(cx_max/2) 
+    heli.set_y_coord(cy_max/2) 
+    images=[agentsim.PhotoImage(file="heli_1.gif"),agentsim.PhotoImage(file="heli_2.gif"),agentsim.PhotoImage(file="heli_3.gif"), 
+            agentsim.PhotoImage(file="heli_4.gif")] 
+    gif.add_images(images) 
+    photo=gif.update_image() 
+    ceiling(0) 
     floor(0)
-    heli.create_helicopter(canvas,photo)
-def do_step():
-    collision()
-    pic=gif.update_image()
-    move_obstacles()
+    #block = obstacles.Obstacle(obstacle_width) 
+    heli.create_helicopter(canvas,photo) 
+def do_step(): 
+    collision() 
+    pic=gif.update_image() 
+    move_obstacles() 
     heli.play(pic,heli_speed)
-def notify(ev):
-    if ev.type=='4':
-        heli.button_pressed()
-    elif ev.type=='5':
-       heli.button_released()
-# Outdated, no longer works
-def collision():
-    canvas=agentsim.gui.get_canvas()
-    heli_x=heli.get_x_coord()
-    heli_y=heli.get_y_coord()
-    (heli_xl,heli_xr)=(heli_x-(heli_width/2),heli_x+(heli_width/2))
-    (heli_yt,heli_yb)=(heli_y-(heli_height/2),heli_y+(heli_height/2))
-    border=canvas.find_withtag("canvas")
-    (x_min,y_min,x_max,y_max)=canvas.bbox(border[0])
-    (y_min,y_max)=(agentsim.gui.clip_y(y_min),agentsim.gui.clip_y(y_max))
-    #print("yt: "+str(heli_yt)+" yb: "+str(heli_yb)+" y_max: "+str(y_max))
-    if heli_yt<y_min or heli_yb>y_max:
-        agentsim.gui.do_shutdown()
-    
-
-if __name__ == "__main__":
-    import agentsim
-    agentsim.init(title="Helicopter", init_fn=do_init, step_fn=do_step)
-    agentsim.gui._root.bind("<Button-1>",notify)
-    agentsim.gui._root.bind("<ButtonRelease-1>",notify)
+    loop_timer.inc() 
+def notify(ev): 
+    if ev.type=='4': 
+        heli.button_pressed() 
+    elif ev.type=='5': 
+       heli.button_released() 
+ 
+def collision(): 
+    (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords() 
+    canvas=agentsim.gui.get_canvas() 
+    heli_x=heli.get_x_coord() 
+    heli_y=heli.get_y_coord() 
+    (xl,xr,yt,yb)=(heli_x-(heli_width/2),heli_x+(heli_width/2),heli_y-(heli_height/2),heli_y+(heli_height/2))
+    items=canvas.find_overlapping(xl,y_min,xr+obstacle_width,y_max) 
+    for i in items: 
+                
+        tag=canvas.gettags(i)
+        tag=tag[0] if tag else ''         
+        
+        if tag=="floor": 
+           floor=blocks.Floor.get_instance_with_id(i)
+           floor_y=floor._y
+           if yb>floor_y:
+               agentsim.gui._do_pause()
+               agentsim.gui._root.bind("<Button-3>",lambda e:None)
+         
+        if tag=="ceiling":
+           ceiling=blocks.Ceil.get_instance_with_id(i)
+           ceiling_y=ceiling._y+ceiling._height
+           if yt<ceiling_y:
+               agentsim.gui._do_pause()
+               agentsim.gui._root.bind("<Button-3>",lambda e:None)
+        if tag=="obstacle":
+            obstacle=blocks.Obstacle.get_instance_with_id(i)
+            obstacle_x=obstacle._x
+            obstacle_yt=obstacle._y
+            obstacle_yb=obstacle_yt+obstacle._height
+            if yt>=obstacle_yt and yb<=obstacle_yb:
+                if xr>obstacle_x:
+                    print("xr: "+str(xr)+" obstacle_x: "+str(obstacle_x))                    
+                    agentsim.gui._do_pause()                    
+                    agentsim.gui._root.bind("<Button-3>",lambda e:None)                     
+                    
+             
+       
+ 
+if __name__ == "__main__": 
+    import agentsim 
+    agentsim.init(title="Helicopter", init_fn=do_init, step_fn=do_step) 
+    agentsim.gui._root.bind("<Button-1>",notify) 
+    agentsim.gui._root.bind("<ButtonRelease-1>",notify) 
     agentsim.start()
