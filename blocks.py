@@ -39,7 +39,7 @@ class Block():
         return self._id
 
 class Ceil(Block):
-    def __init__(self,x,width=100,min_height=15,max_height=60):
+    def __init__(self,x,width=100,min_height=45,max_height=60):
         self.canvas=agentsim.gui.get_canvas()
         (x_min, y_min, x_max, y_max) = agentsim.gui.get_canvas_coords()
         self._height = random.randint(min_height,max_height)
@@ -50,7 +50,7 @@ class Ceil(Block):
         Ceil._instances[self._id] = self
 
 class Floor(Block):
-    def __init__(self, x, width = 100, min_height = 15, max_height = 60):
+    def __init__(self, x, width = 100, min_height = 45, max_height = 60):
         self.canvas=agentsim.gui.get_canvas()
         (x_min, y_min, x_max, y_max) = agentsim.gui.get_canvas_coords()
         self._height = random.randint(min_height,max_height)

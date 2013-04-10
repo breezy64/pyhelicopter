@@ -3,7 +3,7 @@ import movingpic
 import blocks 
 import random
  
-heli_width=144 
+heli_width=139
 heli_height=53 
 heli_speed=5 
 canvas_speed=10 
@@ -53,10 +53,10 @@ def move_obstacles():
  
 def do_init(): 
     canvas=agentsim.gui.get_canvas() 
-    (cx_min,cy_min,cx_max,cy_max)=agentsim.gui.get_canvas_coords() 
-    canvas.create_rectangle(cx_min,cy_min,cx_max,cy_max,tags="canvas") 
+    (cx_min,cy_min,cx_max,cy_max)=agentsim.gui.get_canvas_coords()
     heli.set_x_coord(cx_max/2) 
-    heli.set_y_coord(cy_max/2) 
+    heli.set_y_coord(cy_max/2)
+    print(cy_max/2-(heli_height/2)) 
     images=[agentsim.PhotoImage(file="heli_1.gif"),agentsim.PhotoImage(file="heli_2.gif"),agentsim.PhotoImage(file="heli_3.gif"), 
             agentsim.PhotoImage(file="heli_4.gif")] 
     gif.add_images(images) 
@@ -72,6 +72,7 @@ def do_step():
     heli.play(pic,heli_speed)
     loop_timer.inc() 
 def notify(ev): 
+    print((ev.x,ev.y))    
     if ev.type=='4': 
         heli.button_pressed() 
     elif ev.type=='5': 
@@ -104,14 +105,22 @@ def collision():
                agentsim.gui._root.bind("<Button-3>",lambda e:None)
         if tag=="obstacle":
             obstacle=blocks.Obstacle.get_instance_with_id(i)
-            obstacle_x=obstacle._x
-            obstacle_yt=obstacle._y
-            obstacle_yb=obstacle_yt+obstacle._height
-            if yt>=obstacle_yt and yb<=obstacle_yb:
-                if xr>obstacle_x:
-                    print("xr: "+str(xr)+" obstacle_x: "+str(obstacle_x))                    
+            obs_xl=obstacle._x
+            obs_xr=obs_xl+obstacle._width
+            obs_yt=obstacle._y
+            obs_yb=obs_yt+obstacle._height
+            error_xl=355
+            error_xr=386
+            error_yb=32.5+yt
+            if yt>=obs_yt and yb<=obs_yb:
+                if xr>obs_xl:
+                    print("xr: "+str(xr)+" obs_x: "+str(obs_x))                    
                     agentsim.gui._do_pause()                    
-                    agentsim.gui._root.bind("<Button-3>",lambda e:None)                     
+                    agentsim.gui._root.bind("<Button-3>",lambda e:None)  
+            elif xr>obs_xr and xl<obs_xl:       
+                if (yb>obs_yt and yt<obs_yt) or (yt<obs_yb and yb>obs_yb):
+                    agentsim.gui._do_pause()                    
+                    agentsim.gui._root.bind("<Button-3>",lambda e:None)               
                     
              
        
