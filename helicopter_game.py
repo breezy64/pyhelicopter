@@ -72,7 +72,6 @@ def do_step():
     heli.play(pic,heli_speed)
     loop_timer.inc() 
 def notify(ev): 
-    print((ev.x,ev.y))    
     if ev.type=='4': 
         heli.button_pressed() 
     elif ev.type=='5': 
