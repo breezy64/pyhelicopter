@@ -11,12 +11,16 @@ canvas_speed=10
 brick_width=100
 brick_limit=30
 obstacle_limit=5
-obstacle_width=25 
+obstacle_width=25
+xpos = 750
+ypos = 20
+increment = 100 
  
  
 heli=helicopter.Helicopter(0,0,heli_width,heli_height) 
 gif=movingpic.Picture(0)
-loop_timer=blocks.Timer() 
+loop_timer=blocks.Timer()
+highscore = blocks.Score(xpos,ypos)
  
  
 
@@ -27,7 +31,7 @@ def do_init():
     (cx_min,cy_min,cx_max,cy_max)=agentsim.gui.get_canvas_coords()
     heli.set_x_coord(cx_max/2) 
     heli.set_y_coord(cy_max/2)
-    print(cy_max/2-(heli_height/2)) 
+    # The original gif is from     
     images=[agentsim.PhotoImage(file="heli_1.gif"),agentsim.PhotoImage(file="heli_2.gif"),agentsim.PhotoImage(file="heli_3.gif"), 
             agentsim.PhotoImage(file="heli_4.gif")] 
     gif.add_images(images) 
@@ -35,32 +39,45 @@ def do_init():
     ceiling(0) 
     floor(0)
     #block = obstacles.Obstacle(obstacle_width) 
-    heli.create_helicopter(canvas,photo) 
+    heli.create_helicopter(canvas,photo)
+    highscore.add_canvas(canvas) 
 def do_step(): 
     collision() 
+    #Cycle to the next image of the helicopter    
     pic=gif.update_image() 
     move_enemies()
     move_obstacles() 
+    # move helicopter    
     heli.play(pic,heli_speed)
-    loop_timer.inc() 
+    #increment loop timer    
+    loop_timer.inc()
+    highscore.inc(increment)
+    highscore.drawtime()
+    agentsim.gui._root.after(1,highscore.hide) # delay to make score appear and re-appear without drawover
 def notify(ev): 
-    #print((ev.x,ev.y))
+    # Monitor the state of left_mouse     
+    
+    # Type 4==left mouse pressed    
     if ev.type=='4': 
         heli.button_pressed() 
+    # Type 5==left mouse released     
     elif ev.type=='5': 
        heli.button_released() 
 def ceiling(x): 
+    # make the ceiling    
     (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords() 
     while x<x_max: 
         block=blocks.Ceil(x,brick_width) 
         x+=brick_width 
 def floor(x): 
+    # Make the floor    
     (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords() 
     while x<x_max: 
         block=blocks.Floor(x,brick_width) 
         x+=brick_width 
 def move_obstacles(): 
     (x_min, y_min,x_max,y_max) = agentsim.gui.get_canvas_coords()    
+    # Get all the obstacles that need to be manipulated    
     ceils = set(blocks.Ceil.get_all_instances()) 
     floors = set(blocks.Floor.get_all_instances())
     all_blocks = blocks.Block.get_all_instances() 
@@ -68,33 +85,42 @@ def move_obstacles():
     superset=ceils.union(floors)
     for o in all_blocks:
         o.move_by(canvas_speed)
+    # Add more ceiling and floor bricks if the number of bricks is less than brick_limit    
     if len(superset)<brick_limit:    
         ceil_last_block=max(ceils,key=lambda e:e._x) 
         ceil_x=ceil_last_block._x+brick_width 
+        #Add the next ceiling brick directly after the last ceiling_brick        
         ceil_new_block=blocks.Ceil(ceil_x,brick_width) 
-     
+        #Repeat the above procedure for floor bricks
         floor_last_block=max(floors,key=lambda e:e._x) 
         floor_x=floor_last_block._x+brick_width 
         floor_new_block=blocks.Floor(floor_x,brick_width)
     canvas=agentsim.gui.get_canvas()
     o_blocks=len(canvas.find_withtag("obstacle"))  
+    #space out the positioning of obstacles using a timer    
     if o_blocks<obstacle_limit and loop_timer.get_time()%50==0:
         block = blocks.Obstacle(obstacle_width) 
 def move_enemies():
     (x_min, y_min,x_max,y_max) = agentsim.gui.get_canvas_coords()
+    #get instances of every enemy    
     rockets = set(enemies.Rocket.get_all_instances())
     missiles = set(enemies.Missile.get_all_instances())
     lasers = set(enemies.Laser.get_all_instances())
-    
+    #after certain time spawn enemies
     if loop_timer.get_time() > 300 and loop_timer.get_time() < 400:
+        #one rocket at a time        
         if len(rockets) < 1:
             new_rocket = enemies.Rocket(heli.y_coord)
     if loop_timer.get_time() > 400 and loop_timer.get_time() < 500:
+        #one missile at a time        
         if len(missiles) < 1:
             new_missile = enemies.Missile(heli.y_coord)
     if loop_timer.get_time() > 800:
-        if len(lasers) < 1:
-            new_laser = enemies.Laser()
+        #one laser at a time at certain interval        
+        if loop_timer.get_time() % 100 == 0:
+            if len(lasers) < 1:
+                new_laser = enemies.Laser()
+    #call move function for enemies on screen    
     for r in rockets:
         r.move_by()
     for m in missiles:
@@ -102,57 +128,34 @@ def move_enemies():
     for l in lasers:
         l.move_by(heli.y_coord)
 def collision(): 
+    # Collision() approximates the helicopter by a rectangle
+    # This approximates sometimes results in a collision with "white space"    
     (x_min,y_min,x_max,y_max)=agentsim.gui.get_canvas_coords() 
     canvas=agentsim.gui.get_canvas() 
     heli_x=heli.get_x_coord() 
     heli_y=heli.get_y_coord() 
-    (xl,xr,yt,yb)=(heli_x-(heli_width/2),heli_x+(heli_width/2),heli_y-(heli_height/2)+6.5,heli_y+(heli_height/2))
-    items=canvas.find_overlapping(xl,y_min,xr+obstacle_width,y_max) 
+    # Center the bounding box    
+    (xl,xr)=(heli_x-(heli_width/2),heli_x+(heli_width/2))  
+    (yt,yb)=heli_y-(heli_height/2)+6.5,heli_y+(heli_height/2)
+    #Find all the items within bounding box the encompasses the rectangle    
+    items=canvas.find_overlapping(xl,yt,xr,yb)
+ 
     for i in items: 
-                
-        tag=canvas.gettags(i)
-        tag=tag[0] if tag else ''         
+        # get all the tags associated with i         
+        tags=canvas.gettags(i)        
+        # Get the tag of the item from the tuple tags        
+        tag=tags[0] if tags else ''         
+        # if it's colliding with anything we care about, end the game         
+        if tag == "laser" or tag == "rocket" or tag == "missile" or tag == "obstacle" or tag == "ceiling" or tag == "floor":
+            endgame() 
         
-        if tag=="laser":
-            laser=enemies.Laser.get_instance_with_id(i)
-            if laser._y>yt and laser._y+laser._height<yb:
-                endgame()
-        if tag=="floor": 
-           floor=blocks.Floor.get_instance_with_id(i)
-           floor_y=floor._y
-           if yb>floor_y:
-               endgame()
-         
-        if tag=="ceiling":
-           ceiling=blocks.Ceil.get_instance_with_id(i)
-           ceiling_y=ceiling._y+ceiling._height
-           if yt<ceiling_y:
-               endgame()
-        if tag=="obstacle" or tag=="rocket" or tag=="missile":
-            if tag=="obstacle":
-                obstacle=blocks.Obstacle.get_instance_with_id(i)
-            else:
-                obstacle=enemies.Enemy.get_instance_with_id(i)
-            obs_xl=obstacle._x
-            obs_xr=obs_xl+obstacle._width
-            obs_yt=obstacle._y
-            obs_yb=obs_yt+obstacle._height
-            #error_xl=355
-            #error_xr=386
-            #error_yb=32.5+yt
-            if yt>=obs_yt and yb<=obs_yb:
-                if xr>obs_xl:
-                    print("xr: "+str(xr)+" obs_xl: "+str(obs_xl))                   
-                    endgame()
-            elif xr>obs_xr and xl<obs_xl:       
-                if (yb>obs_yt and yt<obs_yt) or (yt<obs_yb and yb>obs_yb):
-                    #print("yb: "+str(yb)+" obs_yt: "+str(obs_yt))
-                    #print("yt: "+str(yt)+" obs_yb: "+str(obs_yb))
-                    endgame()
 def endgame():
+     highscore.dispscore()
+     # pause the simulation
      agentsim.gui._do_pause()                    
+     # disable the start button
      agentsim.gui._root.bind("<Button-3>",lambda e:None)
-             
+            
        
  
 if __name__ == "__main__": 
