@@ -195,9 +195,14 @@ class GUI():
 
     def _do_run(self,ev):
         if not self._running:
-            self._speed = 149
+            self._speed = 120
             self._running = 1
             self._run()
+    def _do_reset(self,ev):
+        self._running = 0
+        self._cancel_next_simulation()
+        if self._init_fn != None:
+            self._init_fn()
 
     # needs to be own function, not part of _do_run, 
     # because it reschedules itself

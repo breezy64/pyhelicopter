@@ -9,6 +9,7 @@ class Helicopter:
         self.id=None
         self.photo=photo
         self.button_press=0
+        self.box_id=None
     def button_pressed(self):
         self.button_press=1
     def button_released(self):
@@ -28,12 +29,13 @@ class Helicopter:
     def create_helicopter(self,canvas,photo):
         self.photo=photo
         self.canvas=canvas
+        self.box_id=canvas.create_rectangle(self.x_coord-0.5*self.width,self.y_coord-0.5*self.height,self.x_coord+0.5*self.width,self.y_coord+0.5*self.height)
         self._draw()
     def play(self,photo,dy=50):
         self.photo=photo
         if self.button_press:
             dy-=2*dy
-        #self.canvas.move(self.id,0,dy)
+        self.canvas.move(self.box_id,0,dy)
         self.canvas.delete(self.id)
         self.y_coord+=dy
         self._draw()
