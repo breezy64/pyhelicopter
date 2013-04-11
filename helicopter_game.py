@@ -31,7 +31,7 @@ def do_init():
     (cx_min,cy_min,cx_max,cy_max)=agentsim.gui.get_canvas_coords()
     heli.set_x_coord(cx_max/2) 
     heli.set_y_coord(cy_max/2)
-    # The original gif is from     
+    # The original gif is from http://www.swish-designs.co.uk/index.php?pageid=33     
     images=[agentsim.PhotoImage(file="heli_1.gif"),agentsim.PhotoImage(file="heli_2.gif"),agentsim.PhotoImage(file="heli_3.gif"), 
             agentsim.PhotoImage(file="heli_4.gif")] 
     gif.add_images(images) 
@@ -49,11 +49,12 @@ def do_step():
     move_obstacles() 
     # move helicopter    
     heli.play(pic,heli_speed)
-    #increment loop timer    
+    #increment loop timer and highscore   
     loop_timer.inc()
     highscore.inc(increment)
     highscore.drawtime()
-    agentsim.gui._root.after(1,highscore.hide) # delay to make score appear and re-appear without drawover
+    #the value 10000 is the delay
+    agentsim.gui._root.after(1,highscore.hide)
 def notify(ev): 
     # Monitor the state of left_mouse     
     
