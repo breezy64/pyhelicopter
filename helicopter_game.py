@@ -44,7 +44,7 @@ def do_step():
     heli.play(pic,heli_speed)
     loop_timer.inc() 
 def notify(ev): 
-    print((ev.x,ev.y))
+    #print((ev.x,ev.y))
     if ev.type=='4': 
         heli.button_pressed() 
     elif ev.type=='5': 
@@ -146,8 +146,8 @@ def collision():
                     endgame()
             elif xr>obs_xr and xl<obs_xl:       
                 if (yb>obs_yt and yt<obs_yt) or (yt<obs_yb and yb>obs_yb):
-                    print("yb: "+str(yb)+" obs_yt: "+str(obs_yt))
-                    print("yt: "+str(yt)+" obs_yb: "+str(obs_yb))
+                    #print("yb: "+str(yb)+" obs_yt: "+str(obs_yt))
+                    #print("yt: "+str(yt)+" obs_yb: "+str(obs_yb))
                     endgame()
 def endgame():
      agentsim.gui._do_pause()                    
