@@ -81,4 +81,30 @@ class Timer():
     def get_time(self):
         return self.timer
 
+class Score():
+    def __init__(self,xpos,ypos,canvas=None):
+        self.t = 0
+        self.x = xpos
+        self.y = ypos
 
+    def inc(self,inc=100):
+        self.t = self.t + inc
+        #print("Highscore:",self.t)
+        return self.t
+    
+    def add_canvas(self,canvas):
+        self.canvas = agentsim.gui.get_canvas()
+
+    def getcanvas(self):
+        return self.canvas
+
+    def drawtime(self):
+        self.score = self.canvas.create_text(self.x,self.y,text=str(self.t),fill='white')
+                                         
+    def hide(self):
+        self.coords = self.canvas.coords(self.score)
+        self.canvas.move(self.score,-1000,-1000)
+
+    def dispscore(self):
+        self.canvas.create_text(650,20,text='Your Score:',fill='white')
+        self.endscore = self.canvas.create_text(725,20,text=str(self.t),fill='white')
