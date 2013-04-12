@@ -1,47 +1,51 @@
 import agentsim
 import random
-"""
-Enemy class includes Rockets, Missiles, and Lasers
-Rocket:
-    most basic class, takes in helicopters y coordinate to spawn infront of helicopter on right side of screen
-    move class only moves object left then delets when object is off screen
-Missile:
-    little bit more complex then rockets, spawns at random y coordinate and on the right side of the screen
-    move class moves it left constantly and up or down depending on location of helicopter then deletes it when missile if off screen
-Laser:
-    laser spawns middle y coordinate of whole screen and is as wide as the entire screen
-    move class moves laser up or down based on helicopters location and deletes function after certain number of calls
-    
-"""
+
 
 #most basic enemy class includes class methods for getting and deleting instances of enemy
 class Enemy():
+      """
+      Enemy class includes Rockets, Missiles, and Lasers
+      
+      Rocket:
+      most basic class, takes in helicopters y coordinate to spawn infront of helicopter on right side of screen
+      move class only moves object left then delets when object is off screen
+      
+      Missile: Missiles are a little bit more complex then rockets, spawns at random y coordinate and on the right side of the screen
+      move class moves it left constantly and up or down depending on location of helicopter then deletes it when missile if off screen
+      
+      Laser: Laser spawns middle y coordinate of whole screen and is as wide as the entire screen 
+      move class moves laser up or down based on helicopters location and deletes function after certain number of calls
+    
+      """      
       _instances = {}
-      #took from zombiegame, self explanatory 
+      # taken from zombiegame assignment, self explanatory 
       @classmethod
       def get_all_instances(cls):
             return [v for v in Enemy._instances.values() if isinstance(v, cls)]
-      #took from zombiegame, self explanatory 
+      # taken from zombiegame assignment, self explanatory
       @classmethod
       def get_instance_with_id(cls, id):
         if id in Enemy._instances:
             return (Enemy._instances[id])
-      #took from zombiegame, self explanatory 
+      # based on del_instance_with_id from zombiegame assignment, self explanatory 
       @classmethod
       def del_instance_with_id(cls, id):
             if id in Enemy._instances:
                   del(Enemy._instances[id])
-      #took from zombiegame, self explanatory 
+      # taken from zombiegame, self explanatory 
       @classmethod
       def del_instance(cls, obj):
             cls.del_instance_with_id(obj.get_id())
-      #simple init function, never actually used creates circle and id for instance
+      # simple init function, never actually used creates circle and id for instance
       def __init__(self):
             self._canvas=agentsim.gui.get_canvas()
             self._id=self.canvas.create_circle(10,20,30,40,tags="enemy")
-            Enemy._instances[self._id] = self
-      # moves enemy right until off screen then deletes     
+            Enemy._instances[self._id] = self     
       def move_by(self,dx=25):
+        """
+         move_by moves enemy right until off screen then deletes it
+        """
         self._x = self._x - dx
         self._canvas.move(self._id,-1*dx,0)
         xr=self._x+self._width
@@ -77,8 +81,12 @@ class Missile(Enemy):
             self._size = size
             self._id=self._canvas.create_oval(self._x,self._y,self._x+self._size,self._y+self._size,fill = "green",tags="missile")
             Missile._instances[self._id] = self
-      #takes in helicopters y coordinate and moves toward it vertically but moves left constantly      
+        
       def move_by(self,heli_y,dx = 20,dy = 2):
+            """
+            move_by takes in helicopters y coordinate and moves toward it 
+            vertically but moves left constantly
+            """
             if heli_y > self._y:
                   dy = 2
             else:
@@ -105,9 +113,12 @@ class Laser(Enemy):
             self._id=self._canvas.create_rectangle(self._x,self._y,x_max,self._y+self._height,fill = "green",tags="laser",outline="")
             Rocket._instances[self._id] = self
             self.timer = 0
-      # moves laser up or down depending on whether helicopter is above or below
-      # deletes laser after certain number of moves
+    
       def move_by(self, heli_y):
+            """
+            move_by moves laser up or down depending on whether helicopter is above or below
+            deletes laser after certain number of moves
+            """
             if heli_y > self._y:
                   dy = 2
             else:

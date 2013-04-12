@@ -1,8 +1,6 @@
-class Picture():
+class mPicture():
     """
-    >>> t=Picture()
-    >>> t.counter==0
-    True
+    The mPicture class cycles through a group of images in an attempt to create an animation
     """
     def __init__(self,counter=0,images=None):
         self.images=images

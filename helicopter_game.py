@@ -4,24 +4,31 @@ import blocks
 import random
 import enemies
  
-
+# heli_speed controls the speed at which the helicopter moves up and down
 heli_speed=5 
+# canvas speed controls the speed of the floor, ceiling, and obstacles
 canvas_speed=10 
+# brick_width is the width of an individual ceiling/floor unit
 brick_width=100
+# brick_limit sets the limit for number of instances of ceiling/floor objects
 brick_limit=30
+# onstacle_limit limits the number of obstacle objects
 obstacle_limit=5
 obstacle_width=25
+
+# Position the higscore counter
 xpos = 750
 ypos = 20
 increment = 100 
  
- 
-heli=helicopter.Helicopter(0,0)
-heli_width=heli.get_width()
-heli_height=heli.get_height() 
-gif=movingpic.Picture(0)
+# Initialize a bunch of objects 
+heli=helicopter.Helicopter(0,0) 
+gif=movingpic.mPicture(0)
 loop_timer=blocks.Timer()
 highscore = blocks.Score(xpos,ypos)
+
+heli_width=heli.get_width()
+heli_height=heli.get_height()
  
  
 
@@ -30,16 +37,19 @@ highscore = blocks.Score(xpos,ypos)
 def do_init(): 
     canvas=agentsim.gui.get_canvas() 
     (cx_min,cy_min,cx_max,cy_max)=agentsim.gui.get_canvas_coords()
+    # Put helicopter at the center of screen
     heli.set_x_coord(cx_max/2) 
     heli.set_y_coord(cy_max/2)
     # The original gif is from http://www.swish-designs.co.uk/index.php?pageid=33     
     images=[agentsim.PhotoImage(file="heli_1.gif"),agentsim.PhotoImage(file="heli_2.gif"),agentsim.PhotoImage(file="heli_3.gif"), 
             agentsim.PhotoImage(file="heli_4.gif")] 
+    # Load helicopter images into motion picture class
     gif.add_images(images) 
     photo=gif.update_image() 
+    #initialize floor and ceiling
     ceiling(0) 
-    floor(0)
-    #block = obstacles.Obstacle(obstacle_width) 
+    floor(0) 
+    # Add references to the canvas to classes that need them
     heli.create_helicopter(canvas,photo)
     highscore.add_canvas(canvas) 
 def do_step(): 
