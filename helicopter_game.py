@@ -4,8 +4,7 @@ import blocks
 import random
 import enemies
  
-heli_width=139
-heli_height=53 
+
 heli_speed=5 
 canvas_speed=10 
 brick_width=100
@@ -17,7 +16,9 @@ ypos = 20
 increment = 100 
  
  
-heli=helicopter.Helicopter(0,0,heli_width,heli_height) 
+heli=helicopter.Helicopter(0,0)
+heli_width=heli.get_width()
+heli_height=heli.get_height() 
 gif=movingpic.Picture(0)
 loop_timer=blocks.Timer()
 highscore = blocks.Score(xpos,ypos)
