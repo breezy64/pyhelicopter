@@ -1,3 +1,18 @@
+#    CMPUT 297/115 - Helicopter Game - agentsim.py - Due 2013-04-12
+#                                                                                  
+#    Version 3.0 2013-04-13                                            
+#                                                                      
+#    By: Byron Maroney                                                 
+#        Edrick de Guzman
+#        Navjeet Dhaliwal                                              
+#                                                                       
+#                                                                      
+#   This assignment has been done under the full collaboration model,  
+#   and any extra resources are cited in the code below.
+
+# agentsim.py is a stripped down version of agentsim.py
+# from the zombiegame assignment    
+
 """
 Simple Graphical User Interface module for 2D agent simulations
 

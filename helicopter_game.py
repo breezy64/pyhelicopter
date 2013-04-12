@@ -1,3 +1,16 @@
+#    CMPUT 297/115 - Helicopter Game - helicopter_game.py - Due 2013-04-12
+#                                                                                  
+#    Version 3.0 2013-04-13                                            
+#                                                                      
+#    By: Byron Maroney                                                 
+#        Edrick de Guzman
+#        Navjeet Dhaliwal                                              
+#                                                                       
+#                                                                      
+#   This assignment has been done under the full collaboration model,  
+#   and any extra resources are cited in the code below.       
+
+
 import helicopter 
 import movingpic 
 import blocks 
@@ -64,7 +77,7 @@ def do_step():
     loop_timer.inc()
     highscore.inc(increment)
     highscore.drawtime()
-    #the value 10000 is the delay
+    # delay to make score appear and re-appear without drawover
     agentsim.gui._root.after(1,highscore.hide)
 def notify(ev): 
     # Monitor the state of left_mouse     

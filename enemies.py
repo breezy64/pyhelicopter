@@ -1,3 +1,16 @@
+#    CMPUT 297/115 - Helicopter Game - enemies.py - Due 2013-04-12
+#                                                                                  
+#    Version 3.0 2013-04-13                                            
+#                                                                      
+#    By: Byron Maroney                                                 
+#        Edrick de Guzman
+#        Navjeet Dhaliwal                                              
+#                                                                       
+#                                                                      
+#   This assignment has been done under the full collaboration model,  
+#   and any extra resources are cited in the code below.     
+
+
 import agentsim
 import random
 
@@ -23,12 +36,12 @@ class Enemy():
       @classmethod
       def get_all_instances(cls):
             return [v for v in Enemy._instances.values() if isinstance(v, cls)]
-      # taken from zombiegame assignment, self explanatory
+      # based on del_instance_with_id
       @classmethod
       def get_instance_with_id(cls, id):
         if id in Enemy._instances:
             return (Enemy._instances[id])
-      # based on del_instance_with_id from zombiegame assignment, self explanatory 
+      #from zombiegame assignment
       @classmethod
       def del_instance_with_id(cls, id):
             if id in Enemy._instances:
@@ -44,7 +57,8 @@ class Enemy():
             Enemy._instances[self._id] = self     
       def move_by(self,dx=25):
         """
-         move_by moves enemy right until off screen then deletes it
+         move_by moves enemy across the canvas, and then deletes it when
+         it is off the screen
         """
         self._x = self._x - dx
         self._canvas.move(self._id,-1*dx,0)
@@ -58,8 +72,13 @@ class Enemy():
       
 # rocket inherits from Enemy     
 class Rocket(Enemy):
-      #has its own init that spawns rocket on same y coordinate as helicopter
-      #uses move_by of Enemy
+      """
+      Rocket Class spawns rocket (moving circle) on the same y coordinate as helicopter
+      
+      Constructor:
+      heli_y: The current y coordinate of helicopter
+      height, width: The height and width bounding box that encloses the circle
+      """
       def __init__(self,heli_y, width = 20,height = 20):
             self._canvas=agentsim.gui.get_canvas()
             (x_min, y_min, x_max, y_max) = agentsim.gui.get_canvas_coords()
@@ -72,6 +91,18 @@ class Rocket(Enemy):
             
 # missile inherits from Enemy
 class Missile(Enemy):
+      """
+      The Missile class  creates a moving obstacle that is initialized off the screen and
+      and at the current y coordinate of helicopter. The moving obstacle moves towards the obstacle
+      in the y direction
+
+      Constructor: 
+    
+      Missile(heli_y,size = 20)
+	  
+	  heli_y: The current y coordinate of the helicopter
+      size: The size of the moving obstacle   
+      """
       # init spawns missile at random y coordinate and on the right said of the screen
       def __init__(self,heli_y, size = 20):
             self._canvas=agentsim.gui.get_canvas()
@@ -102,7 +133,10 @@ class Missile(Enemy):
             
 #laser inherits from Enemy 
 class Laser(Enemy):
-      #spawns laser halfway through screen and is as wide as screen
+      """
+      The Laser Class creates a laser (a thin rectangle that is as long as the canvas).
+      The laser moves towards the helicopter in attempt to cause a collision
+      """
       def __init__(self):
             self._canvas=agentsim.gui.get_canvas()
             (x_min, y_min, x_max, y_max) = agentsim.gui.get_canvas_coords()

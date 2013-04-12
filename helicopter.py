@@ -1,8 +1,29 @@
+#    CMPUT 297/115 - Helicopter Game - helicopter.py - Due 2013-04-12
+#                                                                                  
+#    Version 3.0 2013-04-13                                            
+#                                                                      
+#    By: Byron Maroney                                                 
+#        Edrick de Guzman
+#        Navjeet Dhaliwal                                              
+#                                                                       
+#                                                                      
+#   This assignment has been done under the full collaboration model,  
+#   and any extra resources are cited in the code below.     
+
 import agentsim
 class Helicopter:
     """
     Helicopter Class draws the helicopter to the screen and controls/monitors 
     the motion of the helicopter
+
+    Constructor: 
+    
+    Helicopter(x_coord,y_coord,photo=None,canvas=None)
+    
+    x_coord,y_coord: The x and y coordinates of the helicopter
+    photo: image of the helicopter
+    canvas: the canvas on which the helicopter is drawn    
+    
     """
     def __init__(self,x_coord,y_coord,photo=None,canvas=None):
         self.canvas=canvas
@@ -32,7 +53,7 @@ class Helicopter:
     def set_y_coord(self,y_coord):
         self.y_coord=y_coord
     
-    # Accesors
+    # accesors
     def get_x_coord(self):
         return self.x_coord
     def get_y_coord(self):
