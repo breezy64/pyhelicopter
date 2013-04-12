@@ -1,11 +1,11 @@
 import agentsim
 class Helicopter:
-    def __init__(self,x_coord,y_coord,width,height,photo=None,canvas=None):
+    def __init__(self,x_coord,y_coord,photo=None,canvas=None):
         self.canvas=canvas
         self.x_coord=x_coord
         self.y_coord=y_coord
-        self.width=width
-        self.height=height
+        self.width=139
+        self.height=53
         self.id=None
         self.photo=photo
         self.button_press=0
