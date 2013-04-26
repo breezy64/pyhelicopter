@@ -210,7 +210,7 @@ class GUI():
 
     def _do_run(self,ev):
         if not self._running:
-            self._speed = 213
+            self._speed = 120
             self._running = 1
             self._run()
     def _do_reset(self,ev):
