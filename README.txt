@@ -11,7 +11,6 @@ Game Controls:
 
 The main program is in helicopter_game.py
 
-This game is optimized to run on the lab machines in 5-013
 If you experience troubles with speed, you can alter the speed by doing the following:
 
   1. Go into agentsim.py and change the running speed (self._speed) in the do_run() method (line 213). Setting self._speed to a value of 120 is recommended
