@@ -78,7 +78,7 @@ def do_step():
     highscore.inc(increment)
     highscore.drawtime()
     # delay to make score appear and re-appear without drawover
-    agentsim.gui._root.after(1,highscore.hide)
+    agentsim.gui._root.after(30,highscore.hide)
 def notify(ev): 
     # Monitor the state of left_mouse     
     
